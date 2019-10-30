@@ -1,11 +1,20 @@
 import React, { Component } from "react";
-import { Text, View,StyleSheet } from "react-native";
+import { Text, View,StyleSheet,Image } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+// import { Colors } from "react-native/Libraries/NewAppScreen";
 // import console = require("console");
 
 
 class Main extends Component {
+
+    static navigationOptions ={
+        tabBarIcon : () =>(
+            <Image source={require("../assets/img/calendar.png")} 
+                style={{width : 20, height : 20, tintColor : "#FFF"}}
+            />
+        )
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -31,7 +40,7 @@ class Main extends Component {
                 <FlatList
                     style = {styles.lista}
                     data={this.state.eventos}
-                    keyExtractor={item => item.idEvento}
+                    keyExtractor={item => item.idEvento.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.lancamento}>
                             <Text style={styles.tituloLancamento}>{item.titulo}</Text>

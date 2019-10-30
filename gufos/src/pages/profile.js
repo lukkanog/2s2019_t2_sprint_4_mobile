@@ -1,16 +1,47 @@
 import React,{ Component } from "react";
-import { Text,View,StyleSheet,Image } from "react-native";
-
+import { Text,View,StyleSheet,Image, AsyncStorage } from "react-native";
+import jwtDecode from "jwt-decode";
 
 class Profile extends Component{
+    
+    static navigationOptions ={
+        tabBarIcon : () =>(
+            <Image source={require("../assets/img/profile.png")} 
+                style={{width : 20, height : 20,}}
+            />
+        )
+    }
+    
     constructor(props){
         super(props);
         this.state = {
-            usuario : {
-                idUsuario : 234,
-                nome : "Lucas Nogueira de Souza"
-            }
+            token : null,
+            email : null,
         }
+    }
+
+    componentDidMount(){
+        this._buscarDadosDoStorage();
+    }
+
+    _buscarDadosDoStorage = async() =>{
+        try {
+            const tokenDoStorage = await AsyncStorage.getItem("@gufos:token");
+            
+            if (tokenDoStorage != null){
+                this.setState({token : tokenDoStorage});
+
+                // SE NAO IMPORTAR USA ISSO:
+                // var jwtDecode = require('jwt-decode');
+                //SE IMPORTAR N PRECISA
+
+
+                var user = jwtDecode(tokenDoStorage);
+                this.setState({email : user.email})
+            }
+        } catch (error) {
+            
+        }        
     }
     
     render(){
@@ -19,8 +50,7 @@ class Profile extends Component{
                 <Text h1 style={styles.titulo}>Perfil</Text>
                 <Image style={styles.fotoPerfil} source={{uri: 'https://facebook.github.io/react-native/img/tiny_logo.png'}}/>
                 <View style={styles.noMeio}>
-                    <Text style={styles.id}># {this.state.usuario.idUsuario}</Text>
-                    <Text  style={styles.nome}>{this.state.usuario.nome}</Text>
+                    <Text>Email: {this.state.email}</Text>
                 </View>
             </View>
         )
@@ -40,13 +70,13 @@ const styles = StyleSheet.create({
         color : "#fff",
         backgroundColor : "#993399",
         width: "100%",
-        marginBottom : 30
+        marginBottom : 30,
     },
     fotoPerfil:{
         height: 100,
         width: 100,
         justifyContent : "center",
-        marginVertical : 10
+        marginVertical : 10,
     },
     noMeio:{
         alignItems : "flex-start",
@@ -57,7 +87,7 @@ const styles = StyleSheet.create({
         fontWeight : "bold",
     },
     id:{
-        fontSize : 20
+        fontSize : 20,
     }
 })
 export default Profile;
